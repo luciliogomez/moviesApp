@@ -1,12 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomePage from '../views/HomePage.vue'
+import MovieDetails from "../views/MovieDetails.vue"
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomePage
   },
+  
+  {
+    path: '/movie/:id',
+    name: 'movie',
+    component: MovieDetails
+  },
+
   {
     path: '/about',
     name: 'about',

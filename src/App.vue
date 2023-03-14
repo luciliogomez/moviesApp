@@ -1,10 +1,28 @@
 <template>
-  <nav>
-    <router-link to="/" class="text-green-800">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div>
+    <header-component />
+    <router-view></router-view>
+  </div>
 </template>
+
+<script>
+import HeaderComponent from './components/HeaderComponent.vue';
+    export default{
+      name:"App",
+      components:{
+          HeaderComponent
+      },
+      data(){
+        return {
+
+        }
+      },
+      methods:{
+
+      }
+    }
+
+</script>
 
 <style>
 
