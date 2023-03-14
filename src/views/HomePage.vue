@@ -49,6 +49,7 @@
   
   <script>
   import MovieComponent from '@/components/MovieComponent.vue';
+  import api from "@/api/api.js"
       export default{
         name:"HomePage",
         data(){
