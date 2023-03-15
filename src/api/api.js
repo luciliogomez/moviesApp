@@ -7,4 +7,11 @@ const api = axios.create({
   
   });
 
-export  {api,API_KEY};
+  const getPosterImage = function(img){
+    return "https://image.tmdb.org/t/p/w342"+img
+  }
+  const getBackdropImage = function(img){
+    return "https://image.tmdb.org/t/p/w1280"+img
+  }
+
+export  {api, API_KEY, getPosterImage, getBackdropImage};

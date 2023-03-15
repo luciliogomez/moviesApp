@@ -82,8 +82,8 @@
                       id:     results[i].id,
                       title:  results[i].title,
                       img:    results[i].poster_path,
-                      ano:    results[i].release_date,
-                      votos:  results[i].vote_average
+                      year:    results[i].release_date,
+                      votes:  results[i].vote_average
                     }
 
                     this.popularMovies.push(movie);

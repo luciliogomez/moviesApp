@@ -7,14 +7,17 @@
             </figure>
             </div>
             <div class="info w-full my-1 px-1  flex flex-col justify-center lg:justify-start items-center lg:items-start">
-                <h3 style="font-weight: bolder;" class="text-white ">{{ movie.title }}</h3>
+                <h3 style="font-weight: bolder;font-size: 1.3em;" class="text-white ">{{ movie.title }}</h3>
                 <div class="details w-full flex justify-center lg:justify-start items-center space-x-1 flex-wrap">
-                    <span class="text-blue-600">2023 </span>
+                    <span class="text-blue-600">{{ ano }}</span>
                     <span class="separator bg-white p-1 rounded-full"></span>
-                    <span class="text-white">Drama</span>
-                    <span class="separator bg-white p-1 rounded-full"></span>
+                    <!-- <span class="text-white">Drama</span>
+                    <span class="separator bg-white p-1 rounded-full"></span> -->
                     <span  class="text-blue-400 border flex items-center justify-center text-xs    rounded-full">
-                        <span style="border-color: dodgerblue;" class="text-white border flex items-center justify-center text-xs w-6 h-6   rounded-full">83</span>
+                        <span style="border-color: dodgerblue;" 
+                                class="text-white border flex items-center justify-center text-xs w-6 h-6   rounded-full">
+                            {{ movie.votes }}
+                        </span>
                     </span>
                 </div>
             </div>
@@ -32,11 +35,21 @@ export default{
 
     methods:{
 
+    },
+
+    computed:{
+        ano(){
+            const tokens = this.movie.year.split("-");
+            return tokens[0];
+        }
     }
 }
 </script>
 
 <style scoped>
+ .separator{
+        padding: 3px;
+    }
     .mov{
 
     }

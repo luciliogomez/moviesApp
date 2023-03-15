@@ -1,5 +1,5 @@
 <template>
-        <main class=" main w-full  " :style="'background-image: url(../assets/'+movie.img+')'" >
+        <main class=" main w-full  " :style="'background-image: url('+movie.backdrop_img+')'" >
             <div 
                 class="conteiner w-full " 
                 style="min-height:inherit !important;background-color: rgba(0,0,0,0.8);"
@@ -9,19 +9,22 @@
                     
                     <div class="poster w-64 md:w-1/4 m-auto md:m-0  mb-6" >
                         <figure class="w-full">
-                            <img :src="'../assets/'+movie.img" alt="">
+                            <img :src="movie.img" alt="">
                         </figure>
                     </div>
                     
                     <div class="info  md:w-3/4 flex flex-col justify-start items-center md:items-start md:px-6">
                         
-                        <h2 class="title text-white text-2xl font-bold mb-4">Joker</h2>
+                        <h2 class="title text-white text-2xl font-bold mb-4">{{ movie.title }}</h2>
                         <div 
                             class="details w-full flex justify-center md:justify-start items-center 
                                     space-x-1 flex-wrap text-sm mb-4">
-                            <span class="text-blue-600">2023 </span>
+                            <span class="text-blue-600" v-if="movie">{{ ano }} </span>
                             <span class="separator bg-white p-1 rounded-full"></span>
-                            <span class="text-white">Action, Drama, Adventure</span>
+
+                            <span class="text-white" v-for="(genre,index) in movie.genres" :key="genre.id">
+                                <span><span v-if="index!=0">, </span>{{ genre.name }}</span>
+                            </span>
                             <span class="separator bg-white p-1 rounded-full"></span>
                             <span class="text-white">2h30</span>
                             <!-- <span class="separator bg-white p-1 rounded-full"></span> -->
@@ -31,21 +34,12 @@
                             </span> -->
                         </div>
                         <div class="team mb-6">
-                            <h5 class="text-white font-bold">Director: <span class="font-normal">Todd Philips</span></h5>
-                            <h5 class="text-white font-bold">Writer: <span class="font-normal">Scott Silver</span></h5>
+                            <!-- <h5 class="text-white font-bold">Director: <span class="font-normal">Todd Philips</span></h5> -->
+                            <!-- <h5 class="text-white font-bold">Writer: <span class="font-normal">Scott Silver</span></h5> -->
                         </div>
 
                         <p class="sinopse text-gray-300 text-center md:text-left text-md">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                            Pariatur beatae doloremque ipsa molestias officia reprehenderit atque. 
-                            Neque veniam consequuntur alias, esse maiores qui nobis ea soluta! Accusantium 
-                            nihil a pariatur quaerat, itaque ab ipsam esse? Odio totam, quod voluptates minus
-                            tenetur, harum quas similique illum minima ratione nobis, distinctio consequuntur 
-                            fugiat error assumenda eveniet pariatur officiis eius ea dolorum voluptate quis 
-                            tempore! Exercitationem at suscipit aliquam ea, beatae a accusantium sunt itaque
-                            eos ad officiis quis nisi adipisci doloribus. Iure inventore, rerum debitis et 
-                            minima assumenda ipsa voluptatibus natus ratione provident corporis culpa! Similique
-                            
+                            {{ movie.sinopse }}
                         </p>
                         <div class="cast mt-6 w-full">
                             <h4 class="text-white font-bold text-xl mb-4">TOP CAST</h4>
@@ -85,14 +79,60 @@
 </template>
 
 <script>
+ import {api,API_KEY,getPosterImage,getBackdropImage} from "@/api/api.js"
+
 
     export default{
         name: "MovieDetails",
         data(){
             return {
-                movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"poster3.jpeg", category:"action" }
+                movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"../assets/poster3.jpeg", category:"action",year:"2000" }
             }
+        },
+        methods:{
+            getMovie: async function(){
+
+                console.log(this.$route.params.id)
+                const idMovie = this.$route.params.id;
+                try {
+                  const response = await api.get('/'+idMovie+'?api_key='+ API_KEY +'&page=1');
+                  
+                  const data = response.data;
+                  console.log(data);
+
+                    const movie = {
+                      id:       data.id,
+                      title:    data.title,
+                      img:      getPosterImage(data.poster_path),
+                      backdrop_img:      getBackdropImage(data.backdrop_path),
+                      year:     data.release_date,
+                      votes:    data.vote_average,
+                      sinopse:  data.overview,
+                      genres:   data.genres
+                    }
+                    this.movie = movie;
+
+                }catch (error) 
+                {
+                  console.error(error);
+                }
+
+            }
+        },
+
+        mounted(){
+
+            this.getMovie();
+        
         }
+        ,
+
+        computed:{
+            ano(){
+                const tokens = this.movie.year.split("-");
+                return tokens[0];
+            }
+    }
         
     }
 
