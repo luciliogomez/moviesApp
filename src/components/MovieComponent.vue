@@ -3,7 +3,7 @@
         <div class="mov">
             <div class="poster">
             <figure>
-                <img :src="'../../assets/'+movie.img" alt="" style="width: 100%;">
+                <img :src="'https://image.tmdb.org/t/p/w342/'+movie.img" alt="" style="width: 100%;">
             </figure>
             </div>
             <div class="info w-full my-1 px-1  flex flex-col justify-center lg:justify-start items-center lg:items-start">
@@ -41,7 +41,8 @@ export default{
 
     }
     .poster{
-        width: 100%;
+        width: 90%;
+        margin: auto;
     }
     figure{
         width: 100%;
@@ -62,7 +63,11 @@ export default{
             width: 100%;
         }
         img{
-            height: 300px;
+            height: 320px;
+        }
+        .poster{
+            width: 100%;
+            margin: auto;
         }
     }
     @media (min-width: 1024px){
@@ -85,7 +90,7 @@ export default{
             font-size: 0.9em;
         }
         img{
-            height: 255px;
+            height: 285px;
         }
 
     }

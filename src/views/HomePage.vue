@@ -39,7 +39,7 @@
             class="list mt-8 flex flex-col justify-start items-center w-full flex-wrap 
                     md:flex-row md:justify-start md:items-start "
           >
-            <MovieComponent v-for="(movie) in movieTrends" :key="movie.id" :movie="movie" />
+            <MovieComponent v-for="(movie) in popularMovies" :key="movie.id" :movie="movie" />
         </div>
         <div class="flex justify-center items-center mb-8">
             <button class="btn">Load More</button>
@@ -49,45 +49,60 @@
   
   <script>
   import MovieComponent from '@/components/MovieComponent.vue';
-  import api from "@/api/api.js"
+    import {api,API_KEY} from "@/api/api.js"
       export default{
         name:"HomePage",
         data(){
           return {
-            movieTrends: [
-              {
-                id:1, title:"Quantummania: AntMan and Wasp", img:"poster1.jpeg", category:"action"
-              },
-              {
-                id:2, title:"Elemental", img:"poster2.jpeg", category:"animation"
-              },
-              {
-                id:3, title:"Guardions of the Galaxy Vol.3", img:"poster3.jpeg", category:"adventure"
-              }
-              ,
-              {
-                id:2, title:"Elemental", img:"poster2.jpeg", category:"action"
-              },
-              {
-                id:3, title:"Guardions of the Galaxy Vol.3", img:"poster3.jpeg", category:"comedy"
-              }
-              ,
-              {
-                id:2, title:"Elemental", img:"poster2.jpeg", category:"terror"
-              },
-              {
-                id:3, title:"Guardions of the Galaxy Vol.3", img:"poster3.jpeg", category:"terror"
-              }
-              
-            ]
+            popularMovies: [
+             
+            ],
+            actualPopularPage:1
           }
         },
         components:{
           MovieComponent
         },
         methods:{
-  
-        }
+            getPopular:async function() {
+                
+                try {
+                  const response = await api.get('/popular?api_key='+ API_KEY +'&page=1');
+                  
+                  const data = response.data;
+                  const results = data.results;
+                  console.log("PAGE:" + data.page);
+                  console.log(results);
+
+                  this.actualPopularPage = data.page;
+                  var i = 0;
+                  for(i=0;i<results.length;i++){
+                    
+                    const movie = {
+                      id:     results[i].id,
+                      title:  results[i].title,
+                      img:    results[i].poster_path,
+                      ano:    results[i].release_date,
+                      votos:  results[i].vote_average
+                    }
+
+                    this.popularMovies.push(movie);
+
+                  }
+
+                }catch (error) 
+                
+                {
+                  console.error(error);
+                }
+
+
+            }
+          },
+
+          mounted(){
+            this.getPopular()
+          }
       }
   
   </script>
