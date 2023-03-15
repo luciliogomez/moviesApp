@@ -13,5 +13,8 @@ const api = axios.create({
   const getBackdropImage = function(img){
     return "https://image.tmdb.org/t/p/w1280"+img
   }
+  const getProfileImage = function(img){
+    return "https://image.tmdb.org/t/p/w185"+img
+  }
 
-export  {api, API_KEY, getPosterImage, getBackdropImage};
+export  {api, API_KEY, getPosterImage, getBackdropImage, getProfileImage};

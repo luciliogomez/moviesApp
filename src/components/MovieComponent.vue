@@ -56,6 +56,7 @@ export default{
     .poster{
         width: 90%;
         margin: auto;
+        /* overflow: hidden; */
     }
     figure{
         width: 100%;
@@ -66,6 +67,8 @@ export default{
     a:hover img{
         transform: scale(1.1);
         transition: 0.1s ease-out;
+        border: 2px solid dodgerblue;
+        border-radius: 5px;
     }
     @media (min-width: 768px){
         a{

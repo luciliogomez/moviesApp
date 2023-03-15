@@ -2,7 +2,7 @@
         <main class=" main w-full  " :style="'background-image: url('+movie.backdrop_img+')'" >
             <div 
                 class="conteiner w-full " 
-                style="min-height:inherit !important;background-color: rgba(0,0,0,0.8);"
+                style="min-height:inherit !important;background-color: rgba(0,0,0,0.9);"
                 >
 
                 <div class="content w-full px-6 md:px-2 py-6 md:flex md:justify-between md:items-start">
@@ -41,34 +41,19 @@
                         <p class="sinopse text-gray-300 text-center md:text-left text-md">
                             {{ movie.sinopse }}
                         </p>
-                        <div class="cast mt-6 w-full">
+                        <div class="cast mt-6 w-full" v-if="cast!=null">
                             <h4 class="text-white font-bold text-xl mb-4">TOP CAST</h4>
                             <div class="flex justify-start items-start w-full flex-wrap">
-                                <div class="actor ">
-                                    <figure class=" ">
-                                        <img :src="'../assets/'+movie.img" alt="" class="rounded-full">
+                                <div class="actor " v-for="actor in reducedCast" :key="actor.id">
+                                    <figure class=" " v-if="actor.profile_path!=null">
+                                        <img :src="getCastImage(actor.profile_path)" alt="" class="rounded-full">
                                     </figure>
-                                    <h6 class="text-center">Oscar Isaac</h6>
-                                </div>
-                                <div class="actor">
-                                    <figure class=" ">
-                                        <img :src="'../assets/'+movie.img" alt="" class="rounded-full">
-                                    </figure>
-                                    <h6 class="text-center">Rebeca Fergunson</h6>
-                                </div>
-                                <div class="actor">
-                                    <figure class="">
-                                        <img :src="'../assets/'+movie.img" alt="" class="rounded-full">
-                                    </figure>
-                                    <h6 class="text-center">Zendaya</h6>
-                                </div>
-                                <div class="actor">
-                                    <figure class="">
-                                        <img :src="'../assets/'+movie.img" alt="" class="rounded-full">
-                                    </figure>
-                                    <h6 class="text-center">Zendaya</h6>
-                                </div>
+                                    <div class="w-full flex justify-center icon" style="" v-else>
+                                        <i class="fas fa-user text-white" style="margin: auto;font-size: 3em;"></i>
+                                    </div>
 
+                                    <h6 class="text-center">{{ actor.name }}</h6>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,26 +64,24 @@
 </template>
 
 <script>
- import {api,API_KEY,getPosterImage,getBackdropImage} from "@/api/api.js"
+ import {api,API_KEY, getPosterImage, getBackdropImage,getProfileImage} from "@/api/api.js"
 
 
     export default{
         name: "MovieDetails",
         data(){
             return {
-                movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"../assets/poster3.jpeg", category:"action",year:"2000" }
+                movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"../assets/poster3.jpeg", category:"action", year:"2000" },
+                cast:null
             }
         },
         methods:{
             getMovie: async function(){
-
-                console.log(this.$route.params.id)
                 const idMovie = this.$route.params.id;
+                let cast = null;
                 try {
                   const response = await api.get('/'+idMovie+'?api_key='+ API_KEY +'&page=1');
-                  
                   const data = response.data;
-                  console.log(data);
 
                     const movie = {
                       id:       data.id,
@@ -111,19 +94,44 @@
                       genres:   data.genres
                     }
                     this.movie = movie;
-
                 }catch (error) 
                 {
                   console.error(error);
                 }
 
+                this.cast = cast;
+                console.log(this.cast);
+
+            }
+            ,
+            getCast: async function(){
+                
+                const idMovie = this.$route.params.id;
+                let cast = null
+                try {
+                    const response = await api.get("/"+idMovie+"/credits?api_key="+ API_KEY);
+                  
+                    const data = response.data;
+                    cast = data.cast;
+                    this.cast = cast;
+                    console.log(this.cast);  
+                }catch (error) 
+                {
+                  console.error(error);
+                }
+
+            },
+
+            getCastImage(path){
+                return getProfileImage(path)
             }
         },
 
         mounted(){
 
             this.getMovie();
-        
+            this.getCast();
+            console.log(this.cast)
         }
         ,
 
@@ -131,6 +139,10 @@
             ano(){
                 const tokens = this.movie.year.split("-");
                 return tokens[0];
+            },
+
+            reducedCast(){
+                return this.cast.slice(0,6)
             }
     }
         
@@ -147,6 +159,9 @@
         justify-content: center;
         align-items: center;
         margin-right: 5px;
+        /* flex-wrap: wrap; */
+
+        margin-bottom: 20px;
     }
     .actor figure{
         /* padding: 5px; */
@@ -170,7 +185,7 @@
     .main{
         background-size: cover;
         background-repeat: no-repeat;
-        background-position: left;
+        background-position: center;
         min-height:calc(100vh - 70px) !important;
     }
 
@@ -179,19 +194,23 @@
         height: 100%;
         
     }
+    
+    .icon i{
+        font-size: 3em !important;
+    }
     @media (min-width: 768px){
       .conteiner{
             padding: 5px 50px;
         }
       .main{
-        background-size: 100% !important;
+        background-size: cover;
         background-repeat: no-repeat;
         background-position: left !important;
       }
 
       .actor{
         width: 16%;
-        margin-right: 5px;
+        margin-right: 15px;
     }
     .actor figure{
         /* padding: 5px; */
@@ -205,21 +224,43 @@
         height: 50px !important;
     }
 
+    .icon{
+        width: 50px;
+        height:50px
+    }
+    .icon i{
+        font-size: 3em !important;
+    }
 
     }
 
 
     @media (min-width: 1024px){
       .main{
-        background-size: 100% !important;
+        background-size: cover !important;
         background-repeat: no-repeat;
-        background-position: center  !important;
+        background-position: left  !important;
         min-height:calc(100vh - 80px) !important
       }
       .actor{
-        width: 12%;
-        margin-right: 5px;
+        /* background-color: red; */
+        width: 16%;
+        margin-right: 15px;
     }
+    .actor figure img{
+        margin: auto;
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .icon{
+        width: 100px;
+        height:100px
+    }
+    .icon i{
+        font-size: 3em !important;
+    }
+
     }
 
 

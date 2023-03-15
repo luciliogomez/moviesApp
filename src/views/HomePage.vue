@@ -1,13 +1,17 @@
 <template>
-    <div class="main w-full  " style=";background-image: url('../assets/poster2.jpeg')" >
+    <div class="main w-full  " :style="'background-image: url('+topMovie.backdrop_img+')'" >
         <div class="wrapper w-100 flex justify-center md:justify-between  items-end md:items-start" style="min-height:inherit !important">
           <div class="bg-gradient-to-t from-black via-black md:bg-gradient-to-r md:from-black md:via-black cover w-full rounded-md flex flex-col justify-center items-end" style="min-height: 350px;"> 
-            <div class=" p-4 info flex flex-col justify-end items-end " style="min-height:inherit">
+            <div class=" p-4 info flex flex-col justify-end items-end " style="min-height:inherit" v-if="topRatedMovies[0]">
                 <div class="text flex flex-col items-center ">
-                    <h3 class="text-white text-xl  md:text-left" style="font-size: 1.5em;">Elemental</h3>
-                    <p class="text-gray-300 text-sm text-justify mt-2">Lorem ipsum dolorr adipisicing elit. Tempora delectus dolorem libero quae odit nostrum harum. Deserunt, rerum iste? Molestiae ipsa rem adipisci optio doloribus in porro accusamus voluptas ratione.. 
+                    <h3 class="text-white text-xl  md:text-left" style="font-size: 1.5em;" >{{topMovie.title}}</h3>
+                    <p class="text-gray-300 text-sm text-justify mt-2">
+                      {{topMovie.sinopse}}
                     </p>
-                    <a href="#" class="mt-2 hover:bg-blue-800 inline-block text-white text-center text-sm py-2 px-4 rounded-md  bg-blue-500 " >Details</a>
+                    <router-link :to="{name:'movie', params:{id:topMovie.id}}" 
+                                  class="mt-2 hover:bg-blue-800 inline-block 
+                                  text-white text-center text-sm py-2 px-4 rounded-md  bg-blue-500 " >Details
+                    </router-link>
                 </div>
             </div>
           </div>
@@ -16,7 +20,7 @@
 
     <section class="conteiner movie-list bg-gray-900 px-12 py-4 ">
         <div class="flex flex-col justify-center  md:flex-row md:justify-between items-center ">
-          <h3 class="subtile text-white text-xl  my-4 font-bold">Tendencias</h3>
+          <h3 class="subtile text-white text-2xl  my-4 font-bold">Mais Populares</h3>
           <div class="">
             <div class="" >
               <form class=" ">
@@ -42,21 +46,20 @@
             <MovieComponent v-for="(movie) in popularMovies" :key="movie.id" :movie="movie" />
         </div>
         <div class="flex justify-center items-center mb-8">
-            <button class="btn">Load More</button>
+            <button class="btn" @click="loadMoreMovies">Load More</button>
         </div>
     </section>
   </template>
   
   <script>
   import MovieComponent from '@/components/MovieComponent.vue';
-    import {api,API_KEY} from "@/api/api.js"
+    import {api,API_KEY,getBackdropImage} from "@/api/api.js"
       export default{
         name:"HomePage",
         data(){
           return {
-            popularMovies: [
-             
-            ],
+            popularMovies: [],
+            topRatedMovies:[],
             actualPopularPage:1
           }
         },
@@ -97,12 +100,90 @@
                 }
 
 
+            },
+
+            loadMoreMovies:async function() {
+                
+                try {
+                  const response = await api.get('/popular?api_key='+ API_KEY +'&page='+(this.actualPopularPage + 1));
+                  
+                  const data = response.data;
+                  const results = data.results;
+                  console.log("PAGE:" + data.page);
+                  console.log(results);
+
+                  this.actualPopularPage = data.page;
+                  var i = 0;
+                  for(i=0;i<results.length;i++){
+                    
+                    const movie = {
+                      id:     results[i].id,
+                      title:  results[i].title,
+                      img:    results[i].poster_path,
+                      year:    results[i].release_date,
+                      votes:  results[i].vote_average
+                    }
+
+                    this.popularMovies.push(movie);
+                  }
+
+                }catch (error) 
+                
+                {
+                  console.error(error);
+                }
+            },
+
+            getTopRated:async function() {
+                
+                try {
+                  const response = await api.get('/now_playing?api_key='+ API_KEY +'&page=1');
+                  
+                  const data = response.data;
+                  const results = data.results;
+                  console.log(results);
+
+                  this.actualTopRatedPage = data.page;
+                  var i = 0;
+                  for(i=0;i<results.length;i++){
+                    
+                    const movie = {
+                      id:     results[i].id,
+                      title:  results[i].title,
+                      img:    results[i].poster_path,
+                      backdrop_img:    getBackdropImage(results[i].backdrop_path),
+                      year:    results[i].release_date,
+                      votes:  results[i].vote_average,
+                      sinopse:results[i].overview
+                    }
+
+                    this.topRatedMovies.push(movie);
+                  }
+
+                }catch (error) 
+                {
+                  console.error(error);
+                }
+
+
             }
           },
 
           mounted(){
-            this.getPopular()
+            this.getPopular();
+            this.getTopRated();
+            
+            console.log(this.topRatedMovies)
+          },
+
+          computed: {
+            topMovie()
+            {
+              return this.topRatedMovies[0]?this.topRatedMovies[0]:{};
+            }
           }
+
+
       }
   
   </script>
