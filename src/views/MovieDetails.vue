@@ -25,8 +25,8 @@
                             <span class="text-white" v-for="(genre,index) in movie.genres" :key="genre.id">
                                 <span><span v-if="index!=0">, </span>{{ genre.name }}</span>
                             </span>
-                            <span class="separator bg-white p-1 rounded-full"></span>
-                            <span class="text-white">2h30</span>
+                            <!-- <span class="separator bg-white p-1 rounded-full"></span>
+                            <span class="text-white">2h30</span> -->
                             <!-- <span class="separator bg-white p-1 rounded-full"></span> -->
                             <!-- <span  class="text-blue-400 border flex items-center justify-center text-xs    rounded-full">
                                 <span style="border-color: dodgerblue;" 
@@ -72,7 +72,8 @@
         data(){
             return {
                 movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"../assets/poster3.jpeg", category:"action", year:"2000" },
-                cast:null
+                cast:null,
+                
             }
         },
         methods:{
@@ -80,7 +81,7 @@
                 const idMovie = this.$route.params.id;
                 let cast = null;
                 try {
-                  const response = await api.get('/'+idMovie+'?api_key='+ API_KEY +'&page=1');
+                  const response = await api.get('/movie/'+idMovie+'?api_key='+ API_KEY +'&page=1&language=pt-BR');
                   const data = response.data;
 
                     const movie = {
@@ -100,7 +101,7 @@
                 }
 
                 this.cast = cast;
-                console.log(this.cast);
+                // console.log(this.cast);
 
             }
             ,
@@ -109,12 +110,12 @@
                 const idMovie = this.$route.params.id;
                 let cast = null
                 try {
-                    const response = await api.get("/"+idMovie+"/credits?api_key="+ API_KEY);
+                    const response = await api.get("/movie/"+idMovie+"/credits?api_key="+ API_KEY);
                   
                     const data = response.data;
                     cast = data.cast;
                     this.cast = cast;
-                    console.log(this.cast);  
+                    // console.log(this.cast);  
                 }catch (error) 
                 {
                   console.error(error);
@@ -125,13 +126,16 @@
             getCastImage(path){
                 return getProfileImage(path)
             }
+
+            
+
         },
 
         mounted(){
 
             this.getMovie();
             this.getCast();
-            console.log(this.cast)
+            console.log(this.genres)
         }
         ,
 

@@ -4,13 +4,13 @@
           <div class="bg-gradient-to-t from-black via-black md:bg-gradient-to-r md:from-black md:via-black cover w-full rounded-md flex flex-col justify-center items-end" style="min-height: 350px;"> 
             <div class=" p-4 info flex flex-col justify-end items-end " style="min-height:inherit" v-if="topRatedMovies[0]">
                 <div class="text flex flex-col items-center ">
-                    <h3 class="text-white text-xl  md:text-left" style="font-size: 1.5em;" >{{topMovie.title}}</h3>
+                    <h3 class="text-white text-xl  md:text-left" style="font-size: 1.5em;line-height: normal;" >{{topMovie.title}}</h3>
                     <p class="text-gray-300 text-sm text-justify mt-2">
                       {{topMovie.sinopse}}
                     </p>
                     <router-link :to="{name:'movie', params:{id:topMovie.id}}" 
                                   class="mt-2 hover:bg-blue-800 inline-block 
-                                  text-white text-center text-sm py-2 px-4 rounded-md  bg-blue-500 " >Details
+                                  text-white text-center text-sm py-2 px-4 rounded-md  bg-blue-500 " >Detalhes
                     </router-link>
                 </div>
             </div>
@@ -26,12 +26,11 @@
               <form class=" ">
                 <div class="">
                   <label for="" class="mr-2 text-white text-md ">Filter: </label>
-                  <select name="" id="" class="w-full  py-1 px-1 rounded-md bg-transparent border text-white">
-                    <option value="" selected disabled>Choose Category</option>
-                    <option value="action" class="text-black ">Action</option>
-                    <option value="drama"  class="text-black">Drama</option>
-                    <option value="Comedy" class="text-black">Comedy</option>
-                    <option value="terror" class="text-black">Terror</option>
+                  <select name="" id="" v-model="genre" class="w-full  py-1 px-1 rounded-md bg-transparent border text-white">
+                    <option value="c" selected disabled>Choose Category</option>
+                    <option value="" selected  class="text-black">Todos</option>
+                    <option :value="genre.id" class="text-black " v-for="genre in genres" :key="genre.id">{{genre.name}}</option>
+                    
                   </select>
                 </div>  
               </form>
@@ -60,7 +59,9 @@
           return {
             popularMovies: [],
             topRatedMovies:[],
-            actualPopularPage:1
+            actualPopularPage:1,
+            genres:null,
+            genre:""
           }
         },
         components:{
@@ -70,7 +71,7 @@
             getPopular:async function() {
                 
                 try {
-                  const response = await api.get('/popular?api_key='+ API_KEY +'&page=1');
+                  const response = await api.get('/movie/popular?api_key='+ API_KEY +'&page=1&language=pt-BR&with_genres='+this.genre);
                   
                   const data = response.data;
                   const results = data.results;
@@ -105,7 +106,7 @@
             loadMoreMovies:async function() {
                 
                 try {
-                  const response = await api.get('/popular?api_key='+ API_KEY +'&page='+(this.actualPopularPage + 1));
+                  const response = await api.get('/movie/popular?api_key='+ API_KEY +'&language=pt-BR&page='+(this.actualPopularPage + 1)+'&with_genres='+this.genre);
                   
                   const data = response.data;
                   const results = data.results;
@@ -137,7 +138,7 @@
             getTopRated:async function() {
                 
                 try {
-                  const response = await api.get('/now_playing?api_key='+ API_KEY +'&page=1');
+                  const response = await api.get('/movie/now_playing?api_key='+ API_KEY +'&page=1&language=pt-BR');
                   
                   const data = response.data;
                   const results = data.results;
@@ -166,13 +167,26 @@
                 }
 
 
+            },
+            getGenres: async function(){
+                try {
+                    const response = await api.get("/genre/movie/list?api_key="+ API_KEY+'&language=pt-BR');
+                  
+                    const data = response.data;
+                    this.genres = data.genres;
+                    console.log(this.genres);  
+                }catch (error) 
+                {
+                  console.error(error);
+                }
+
             }
           },
 
           mounted(){
             this.getPopular();
             this.getTopRated();
-            
+            this.getGenres();
             console.log(this.topRatedMovies)
           },
 
@@ -180,6 +194,14 @@
             topMovie()
             {
               return this.topRatedMovies[0]?this.topRatedMovies[0]:{};
+            }
+          },
+
+          watch:{
+            genre(){
+              console.log(this.genre)
+              this.popularMovies = [];
+              this.getPopular()
             }
           }
 
