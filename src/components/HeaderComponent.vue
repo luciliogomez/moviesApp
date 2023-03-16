@@ -6,7 +6,7 @@
             </RouterLink>
         </div>
         <div class="searchBar  flex items-center justify-between  rounded-lg  py-1 md:py-2 px-2 bg-red-400" style="background-color: rgba(255, 255, 255, 0.22);">
-            <input placeholder="Search" class=" border-0 mr-2 bg-transparent text-gray-400 text-sm w-full" type="text" name="" id="">
+            <input v-model="searchText" v-on:keyup.enter="searchMovie" placeholder="Search" class=" border-0 mr-2 bg-transparent text-gray-400 text-sm w-full" type="text" name="" id="">
             <div>
                 <i class="text-gray-400 fas fa-search"></i>
             </div>
@@ -21,11 +21,13 @@
         
         data(){
           return {
-  
+            searchText:''
           }
         },
         methods:{
-  
+            searchMovie:function(){
+                this.$router.push({ path: 'search', query: { query: this.searchText } })
+            }
         }
       }
   
