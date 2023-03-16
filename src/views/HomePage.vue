@@ -25,10 +25,10 @@
             <div class="" >
               <form class=" ">
                 <div class="">
-                  <label for="" class="mr-2 text-white text-md ">Filter: </label>
+                  <label for="" class="mr-2 text-white text-md ">Filtro: </label>
                   <select name="" id="" v-model="genre" class="w-full  py-1 px-1 rounded-md bg-transparent border text-white">
-                    <option value="c" selected disabled>Choose Category</option>
-                    <option value="" selected  class="text-black">Todos</option>
+                    <option value="" selected disabled>Escolhe o género</option>
+                    <option value=""   class="text-black">Todos</option>
                     <option :value="genre.id" class="text-black " v-for="genre in genres" :key="genre.id">{{genre.name}}</option>
                     
                   </select>
