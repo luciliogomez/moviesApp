@@ -5,12 +5,12 @@
             <div class=" p-4 info flex flex-col justify-end items-end " style="min-height:inherit" v-if="topRatedMovies[0]">
                 <div class="text flex flex-col items-center ">
                     <h3 class="text-white text-xl  md:text-left" style="font-size: 1.5em;line-height: normal;" >{{topMovie.title}}</h3>
-                    <p class="text-gray-300 text-sm text-justify mt-2">
+                    <p class="text-gray-300 text-md text-justify mt-2">
                       {{topMovie.sinopse}}
                     </p>
                     <router-link :to="{name:'movie', params:{id:topMovie.id}}" 
                                   class="mt-2 hover:bg-blue-800 inline-block 
-                                  text-white text-center text-sm py-2 px-4 rounded-md  bg-blue-500 " >Detalhes
+                                  text-white text-center text-md py-2 px-6 rounded-md  bg-blue-500 " >Detalhes
                     </router-link>
                 </div>
             </div>
@@ -290,7 +290,7 @@
         margin-bottom: 10px;
       }
       .cover > div > div p{
-        font-size: 1.1em !important;
+        font-size: 1.2em !important;
         margin-bottom: 20px;
       }
       .cover > div{

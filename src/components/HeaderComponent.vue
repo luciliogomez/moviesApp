@@ -1,8 +1,8 @@
 <template>
-    <div class="header conteiner shadow-xs w-100  bg-black h-25 flex  items-center justify-between" style="">
+    <div class="header conteiner shadow-xs w-100  bg-gray-900 h-25 flex  items-center justify-between" style="">
         <div class="logo">
             <RouterLink :to="{name:'home'}"> 
-                <h3 class="text-white text-md"><span class="text-red-700 text-xl" style="font-size: 2em;">M</span>ovies</h3>
+                <h3 class="text-white font-semibold text-md"><span class="text-blue-500 text-xl" style="font-size: 2em;">M</span>ovies</h3>
             </RouterLink>
         </div>
         <div class="searchBar  flex items-center justify-between  rounded-lg  py-1 md:py-2 px-2 bg-red-400" style="background-color: rgba(255, 255, 255, 0.22);">
