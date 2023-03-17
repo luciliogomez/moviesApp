@@ -1,6 +1,6 @@
 # movies APP
     * An web app to explore movies information, made with VueJs 3 & TailwindCss. 
-    * Using the API from <a href="https://developers.themoviedb.org/3/getting-started/introduction">TMDB</a>
+    * Using the API from https://www.themoviedb.org/
 
     
 ## Project setup
