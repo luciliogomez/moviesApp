@@ -3,7 +3,8 @@
         <div class="mov">
             <div class="poster">
             <figure>
-                <img :src="'https://image.tmdb.org/t/p/w342/'+movie.img" alt="" style="width: 100%;">
+                <img  v-if="movie.img!=null" :src="'https://image.tmdb.org/t/p/w342/'+movie.img" alt="" style="width: 100%;">
+                <img v-else src="../assets/poster.jpg" alt=""  style="width: 100% !important;">
             </figure>
             </div>
             <div class="info w-full my-1 px-1  flex flex-col justify-center lg:justify-start items-center lg:items-start">

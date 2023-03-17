@@ -26,7 +26,7 @@
         },
         methods:{
             searchMovie:function(){
-                this.$router.push({ path: 'search', query: { query: this.searchText } })
+                this.$router.push({ name: 'search', query: { query: this.searchText } })
             }
         }
       }

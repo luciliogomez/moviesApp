@@ -9,7 +9,8 @@
                     
                     <div class="poster w-64 md:w-1/4 m-auto md:m-0  mb-6" >
                         <figure class="w-full">
-                            <img :src="movie.img" alt="">
+                            <img v-if="movie.img!='null'" :src="movie.img" alt="">
+                            <img v-else src="../assets/poster.jpg" alt=""  style="height:400px !important;width: 100% !important;">
                         </figure>
                     </div>
                     
@@ -27,11 +28,11 @@
                             </span>
                             <!-- <span class="separator bg-white p-1 rounded-full"></span>
                             <span class="text-white">2h30</span> -->
-                            <!-- <span class="separator bg-white p-1 rounded-full"></span> -->
-                            <!-- <span  class="text-blue-400 border flex items-center justify-center text-xs    rounded-full">
+                            <span class="separator bg-white p-1 rounded-full"></span>
+                            <span  class="text-blue-400 border flex items-center justify-center text-xs    rounded-full">
                                 <span style="border-color: dodgerblue;" 
-                                    class="text-white border flex items-center justify-center text-xs w-6 h-6   rounded-full">83</span>
-                            </span> -->
+                                    class="text-white border flex items-center justify-center text-xs w-6 h-6   rounded-full">{{ movie.votes }}</span>
+                            </span>
                         </div>
                         <div class="team mb-6">
                             <!-- <h5 class="text-white font-bold">Director: <span class="font-normal">Todd Philips</span></h5> -->
@@ -71,7 +72,7 @@
         name: "MovieDetails",
         data(){
             return {
-                movie:{ id:1, title:"Quantummania: AntMan and Wasp", img:"../assets/poster3.jpeg", category:"action", year:"2000" },
+                movie:{ id:1, title:"Loading the movie...", img:"../assets/poster.jpg", category:"action", year:"2000" },
                 cast:null,
                 
             }
@@ -79,15 +80,16 @@
         methods:{
             getMovie: async function(){
                 const idMovie = this.$route.params.id;
-                let cast = null;
+                // let cast = null;
                 try {
                   const response = await api.get('/movie/'+idMovie+'?api_key='+ API_KEY +'&page=1&language=pt-BR');
                   const data = response.data;
-
+                    console.log(data.poster_path)
+                    console.log(data.poster_path)
                     const movie = {
                       id:       data.id,
                       title:    data.title,
-                      img:      getPosterImage(data.poster_path),
+                      img:      data.poster_path?getPosterImage(data.poster_path):"null",
                       backdrop_img:      getBackdropImage(data.backdrop_path),
                       year:     data.release_date,
                       votes:    data.vote_average,
@@ -100,7 +102,7 @@
                   console.error(error);
                 }
 
-                this.cast = cast;
+                // this.cast = cast;
                 // console.log(this.cast);
 
             }
@@ -147,8 +149,15 @@
 
             reducedCast(){
                 return this.cast.slice(0,6)
+            },
+
+        },
+        watch:{
+            $route(){
+                this.getMovie();
+                this.getCast();
             }
-    }
+        }
         
     }
 
