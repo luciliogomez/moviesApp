@@ -1,4 +1,5 @@
 # movies APP
+    * https://movies-five-nu.vercel.app/
     * An web app to explore movies information, made with VueJs 3 & TailwindCss. 
     * Using the API from https://www.themoviedb.org/
 
